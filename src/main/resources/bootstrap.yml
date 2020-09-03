@@ -1,0 +1,7 @@
+info:
+  description: Eureka Discovery Service
+
+spring:
+  application:
+    name: discovery-service
+

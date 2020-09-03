@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-service
+  namespace: common
+  labels:
+    app: discovery-service
+spec:
+  selector:
+    matchLabels:
+      app: discovery-service
+  template:
+    metadata:
+      labels:
+        app: discovery-service
+    spec:
+      containers:
+        - name: discovery-service
+          image: gnovoab/discovery-service:latest
+          imagePullPolicy: Always
+
+          resources:
+            requests:
+              cpu: 200m
+              memory: 300Mi
+            limits:
+              cpu: 800m
+              memory: 700Mi
+
+
+
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: SPRING_PROFILES_ACTIVE
+              value: dev
+
+      imagePullSecrets:
+        - name: regcred
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: discovery-service
+  namespace: common
+spec:
+  type: ClusterIP
+  selector:
+    app: discovery-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8761
